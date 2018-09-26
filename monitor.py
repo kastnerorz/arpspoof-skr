@@ -17,14 +17,29 @@ def get_mac(ip_address):
     return None
 
 if __name__ == '__main__':
+
+    try:
+        if os.geteuid() != 0:
+            print("[*] Run me as root")
+            sys.exit(1)
+    except Exception as msg:
+        print(msg)
+
+    usage = 'Usage: %prog -i interface'
+    parser = OptionParser(usage)
+    parser.add_option('-i', dest='interface', help='Specify the interface to use')
+    (options, args) = parser.parse_args()
+    if options.interface is None:
+        parser.print_help()
+        sys.exit(0)
     
+    iface = options.interface
     print('[*] Enable ARP Spoof Monitor')
     while True:
         try:
-            packets = sniff(filter="arp", iface="en0", count=3)
+            packets = sniff(filter="arp", iface=iface, count=3)
             for packet in packets:
-                if packet.type is '0x806':
-                    print(packet.summary())
+                print(packet.show())
         except KeyboardInterrupt:
             print(f"[*] Stopping Network Monitor")
             sys.exit(0)
