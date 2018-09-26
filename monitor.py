@@ -21,7 +21,7 @@ if __name__ == '__main__':
     print('[*] Enable ARP Spoof Monitor')
     while True:
         try:
-            packets = sniff(filter="arp" iface=conf.iface, count=3)
+            packets = sniff(filter="arp", iface="en0", count=3)
             for packet in packets:
                 if packet.type is '0x806':
                     print(packet.summary())
