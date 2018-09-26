@@ -108,7 +108,7 @@ if __name__ == '__main__':
             print(f"[*] Starting network capture. Packet Count: {packet_count}. Filter: {sniff_filter}")
             packets = sniff(filter=sniff_filter, iface=conf.iface, count=int(packet_count))
             for packet in packets:
-                print(packet.summary())
+                print(packet.show())
             wrpcap(target_ip + "_capture.pcap", packets)
             print(f"[*] Stopping network capture..Restoring network")
             restore_network(gateway_ip, gateway_mac, target_ip, target_mac)
@@ -121,8 +121,9 @@ if __name__ == '__main__':
         print(f"[*] Starting network capture. Filter: {sniff_filter}")
         while True:
             try:
-                packet = sniff(filter=sniff_filter, iface=conf.iface, count=3)
-                print(packet.summary())
+                packets = sniff(filter=sniff_filter, iface=conf.iface, count=3)
+                for packet in packets:
+                    print(packet.summary())
             except KeyboardInterrupt:
                 print(f"[*] Stopping network capture..Restoring network")
                 restore_network(gateway_ip, gateway_mac, target_ip, target_mac)
