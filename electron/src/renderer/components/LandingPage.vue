@@ -24,7 +24,7 @@
           </div>
           <div class="choose">
             <p class="item-width">interface</p>
-            <input class="input" placeholder="请输入interface" v-model="interface"/>
+            <input class="input" placeholder="请输入interface" v-model="iface"/>
           </div>
           <div class="choose">
             <p class="item-width">count</p>
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  import * as shell from '../shell'
   export default {
     name: 'landing-page',
     data () {
@@ -54,7 +54,7 @@
         door: '',
         count: '',
         frequency: '',
-        interface: '',
+        iface: '',
         network: false
       }
     },
@@ -62,13 +62,9 @@
       open (link) {
         this.$electron.shell.openExternal(link)
       },
-      getInfo () {
-        axios.get('https://www.easy-mock.com/mock/5baadd26cff4974b9da470ce/getip').then((res) => {
-          console.log(res.data)
-          this.list = res.data
-        }).catch((err) => {
-          console.log(err)
-        })
+      async getInfo () {
+        let res = await shell.getAllHost('192.168.3.0')
+        console.log(res)
       },
       attack () {
         console.log('attack')

@@ -37,9 +37,15 @@ if __name__ == '__main__':
     print('[*] Enable ARP Spoof Monitor')
     while True:
         try:
-            packets = sniff(filter="arp", iface=iface, count=3)
+            packets = sniff(filter="arp", iface=iface, count=1)
             for packet in packets:
                 print(packet.show())
+                try:
+                    with open('./monitor.log', 'a') as f:
+                        f.write(str(packet.op) + " " + str(packet.psrc) + " " + str(packet.pdst) + "\n")
+                finally:
+                    f.close()
+
         except KeyboardInterrupt:
             print(f"[*] Stopping Network Monitor")
             sys.exit(0)
