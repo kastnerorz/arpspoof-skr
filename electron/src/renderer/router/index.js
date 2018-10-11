@@ -14,6 +14,11 @@ export default new Router({
       path: '/mon',
       name: 'monitor',
       component: () => import('@/components/Mon')
+    },
+    {
+      path: '/packet_capture',
+      name: 'PacketCapture',
+      component: () => import('@/components/PacketCapture')
     }
   ]
 })

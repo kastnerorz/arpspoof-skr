@@ -37,7 +37,6 @@
         </el-main>
       </el-container>
   </div>
-  
 </template>
 
 <script>
